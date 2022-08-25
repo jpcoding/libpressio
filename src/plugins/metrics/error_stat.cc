@@ -29,6 +29,9 @@ namespace error_stat {
     double value_max;
     double value_std;
     double value_mean;
+    double max_x_sq_diff_abs;
+    double max_x_sq_diff_rel;    
+; // max{ |x^2-x'^2|}  
     uint64_t num_elements;
   };
 
@@ -44,6 +47,8 @@ namespace error_stat {
       double sum = 0;
       double min_pw_rel_error = std::numeric_limits<double>::max();
       double max_pw_rel_error = std::numeric_limits<double>::lowest();
+      double max_abs_decomp=0;
+      double max_x_sq_diff_abs=0;
       if(input_begin != nullptr && input2_begin != nullptr) {
         double value_min = *input_begin; 
         double value_max = *input_begin;
@@ -51,10 +56,15 @@ namespace error_stat {
         double diff_max = diff_min;
         double error_min = std::abs(double(*input_begin) - double(*input2_begin));
         double error_max = std::abs(double(diff_min));
+        double add_two = *input_begin + *input2_begin; 
+
         while(input_begin != input_end && input2_begin != input2_end) {
           double diff = *input_begin - *input2_begin;
+          double add_twoinputs =  *input_begin + *input2_begin;
           double error = std::abs(double(diff));
           double squared_error = error*error;
+          max_x_sq_diff_abs =std::max(max_x_sq_diff_abs, std::abs( add_twoinputs*diff)) ;
+          max_abs_decomp = std::max(max_abs_decomp, std::abs(double (*input2_begin)));
 
           sum += *input_begin;
           sum_of_values_squared += (*input_begin * *input_begin);
@@ -101,6 +111,8 @@ namespace error_stat {
         m.max_pw_rel_error = max_pw_rel_error;
 
         m.psnr = -20.0*log10(sqrt(m.mse)/m.value_range);
+        m.max_x_sq_diff_abs=max_x_sq_diff_abs;
+        m.max_x_sq_diff_rel = m.max_x_sq_diff_abs /(max_abs_decomp*max_abs_decomp);
       }
 
       return m;
@@ -173,6 +185,10 @@ class error_stat_plugin : public libpressio_metrics_plugin {
         set(opt, "error_stat:difference_range", (*err_metrics).difference_range);
         set(opt, "error_stat:error_range", (*err_metrics).error_range);
         set(opt, "error_stat:n", (*err_metrics).num_elements);
+        set(opt, "error_stat:max_x_sq_diff_abs", (*err_metrics).max_x_sq_diff_abs);
+        set(opt, "error_stat:max_x_sq_diff_rel", (*err_metrics).max_x_sq_diff_rel);
+
+
       } else {
         set_type(opt, "error_stat:n", pressio_option_uint64_type);
         set_type(opt, "error_stat:psnr", pressio_option_double_type);
@@ -193,6 +209,9 @@ class error_stat_plugin : public libpressio_metrics_plugin {
         set_type(opt, "error_stat:average_error", pressio_option_double_type);
         set_type(opt, "error_stat:difference_range", pressio_option_double_type);
         set_type(opt, "error_stat:error_range", pressio_option_double_type);
+        set_type(opt, "error_stat:max_x_sq_diff_abs", pressio_option_double_type);
+        set_type(opt, "error_stat:max_x_sq_diff_rel", pressio_option_double_type);
+
       }
       return opt;
     }

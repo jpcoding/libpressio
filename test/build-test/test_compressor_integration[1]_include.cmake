@@ -1,0 +1,5 @@
+if(EXISTS "/home/pjiao/git/libpressio/test/build-test/test_compressor_integration[1]_tests.cmake")
+  include("/home/pjiao/git/libpressio/test/build-test/test_compressor_integration[1]_tests.cmake")
+else()
+  add_test(test_compressor_integration_NOT_BUILT test_compressor_integration_NOT_BUILT)
+endif()
