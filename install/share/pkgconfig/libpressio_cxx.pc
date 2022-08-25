@@ -1,9 +1,0 @@
-includedir=/home/pjiao/git/libpressio/install/include/libpressio
-libdir=/home/pjiao/git/libpressio/install/lib64
-
-Name: Libpressio
-Description: An abstraction between different pressio compressors
-Version: 0.86.2
-Cflags: -I${includedir}
-Libs: -L${libdir} -llibpressio
-Requires: std_compat_cxx
