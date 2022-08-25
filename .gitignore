@@ -1,4 +1,6 @@
 CMakeFiles/
 CMakeCache.txt
 build
+install
+.vscode
 spack-*
