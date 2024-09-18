@@ -63,7 +63,7 @@ namespace error_stat {
           double add_twoinputs =  *input_begin + *input2_begin;
           double error = std::abs(double(diff));
           double squared_error = error*error;
-          max_x_sq_diff_abs =std::max(max_x_sq_diff_abs, std::abs( add_twoinputs*diff)) ;
+          max_x_sq_diff_abs =std::max(max_x_sq_diff_abs, std::abs(double add_twoinputs*diff)) ;
           max_abs_decomp = std::max(max_abs_decomp, std::abs(double (*input2_begin)));
 
           sum += *input_begin;
