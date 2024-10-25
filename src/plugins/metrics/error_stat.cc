@@ -64,7 +64,7 @@ namespace error_stat {
           double error = std::abs(double(diff));
           double squared_error = error*error;
           max_x_sq_diff_abs =std::max(max_x_sq_diff_abs, std::abs(double add_twoinputs*diff)) ;
-          max_abs_decomp = std::max(max_abs_decomp, std::abs(double (*input2_begin)));
+          max_abs_orig = std::max(max_abs_decomp, std::abs(double (*input_begin)));
 
           sum += *input_begin;
           sum_of_values_squared += (*input_begin * *input_begin);
@@ -112,7 +112,7 @@ namespace error_stat {
 
         m.psnr = -20.0*log10(sqrt(m.mse)/m.value_range);
         m.max_x_sq_diff_abs=max_x_sq_diff_abs;
-        m.max_x_sq_diff_rel = m.max_x_sq_diff_abs /(max_abs_decomp*max_abs_decomp);
+        m.max_x_sq_diff_rel = m.max_x_sq_diff_abs /(max_abs_orig*max_abs_orig);
       }
 
       return m;
